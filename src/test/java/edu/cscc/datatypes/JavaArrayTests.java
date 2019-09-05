@@ -1,4 +1,4 @@
-package edu.cscc;
+package edu.cscc.datatypes;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Jeff Anderson
  * @since 9/3/19
  */
-public class DataTypeTests {
+public class JavaArrayTests {
 
   @Test
   @DisplayName("T01: basic array operation tests")
@@ -33,6 +33,7 @@ public class DataTypeTests {
       }
     }
   }
+
 
   @Test
   @DisplayName("T02: array initialization tests")
@@ -61,6 +62,7 @@ public class DataTypeTests {
       }
     }
   }
+
 
   @Test()
   @DisplayName("Array exceptions test")
