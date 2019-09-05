@@ -122,4 +122,19 @@ public class NumericConversionTests {
     assertEquals("11101111", Integer.toBinaryString(BYTE_MASK & byteValue));
   }
 
+  @Test
+  @DisplayName("T06: Floating point to whole number upgrade tests")
+  public void test06 () {
+    double doubleValue = 123456789.123456789;
+    long longValue = (long) doubleValue;
+    assertEquals(123456789, longValue);
+
+    float floatValue = 12345.90123F;
+    int intValue = (int) floatValue;
+    assertEquals(12345, intValue);
+
+    assertEquals(6, 20 / 3);
+  }
+
+
 }
