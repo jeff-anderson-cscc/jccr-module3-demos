@@ -124,5 +124,14 @@ public class IntegerRepresentationsTests {
     assertEquals(42, 052);
   }
 
+  @Test
+  @DisplayName("T07: Characters are numbers too")
+  public void test07 () {
+    assertEquals('*', 42);
+    assertEquals('*', 0b101010);
+    assertEquals('*', 0x2a);
+    assertEquals('*', '\u002a');
+    assertEquals('*', 052);
+  }
 
 }
