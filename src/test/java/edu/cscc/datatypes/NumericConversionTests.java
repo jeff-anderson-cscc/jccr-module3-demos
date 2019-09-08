@@ -3,7 +3,7 @@ package edu.cscc.datatypes;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Jeff Anderson
@@ -33,7 +33,7 @@ public class NumericConversionTests {
     assertEquals(127,intValue);
     long longValue = intValue;
     assertEquals("1111111", Long.toBinaryString(longValue));
-    assertEquals(0x0000007F,longValue);
+    assertEquals(0x000000000000007F,longValue);
     assertEquals(127L,longValue);
   }
 
@@ -58,7 +58,7 @@ public class NumericConversionTests {
     long longValue = intValue;
     assertEquals("1111111111111111111111111111111111111111111111111111111110000000", Long.toBinaryString(longValue));
     assertEquals(-0b1000_0000,longValue);
-    assertEquals(-0x00000080L,longValue);
+    assertEquals(-0x0000000000000080L,longValue);
     assertEquals(-128,longValue);
   }
 
@@ -105,36 +105,73 @@ public class NumericConversionTests {
   @DisplayName("T05: Long large positive whole number downgrade tests")
   public void test05 () {
     long longValue = 0x0123456789abcdefL;
-    assertEquals(81985529216486895L, longValue);
-    assertEquals("123456789abcdef", Long.toHexString(longValue));
-    assertEquals("100100011010001010110011110001001101010111100110111101111", Long.toBinaryString(longValue));
     int intValue = (int) longValue;
-    assertEquals(-1985229329, intValue);
+    short shortValue = (short) longValue;
+    byte byteValue = (byte) longValue;
+
+    assertEquals("123456789abcdef", Long.toHexString(longValue));
     assertEquals("89abcdef", Integer.toHexString(intValue));
-    assertEquals("10001001101010111100110111101111", Integer.toBinaryString(intValue));
-    short shortValue = (short) intValue;
-    assertEquals(-12817, shortValue);
     assertEquals("cdef", Integer.toHexString(SHORT_MASK & shortValue));
-    assertEquals("1100110111101111", Integer.toBinaryString(SHORT_MASK & shortValue));
-    byte byteValue = (byte) shortValue;
-    assertEquals(-17, byteValue);
     assertEquals("ef", Integer.toHexString(BYTE_MASK & byteValue));
-    assertEquals("11101111", Integer.toBinaryString(BYTE_MASK & byteValue));
+
+    assertEquals(81985529216486895L, longValue);
+    assertEquals(-1985229329, intValue);
+    assertEquals(-12817, shortValue);
+    assertEquals(-17, byteValue);
   }
 
   @Test
-  @DisplayName("T06: Floating point to whole number upgrade tests")
+  @DisplayName("T06: Small positive whole number upgrade tests")
   public void test06 () {
-    double doubleValue = 123456789.123456789;
-    long longValue = (long) doubleValue;
-    assertEquals(123456789, longValue);
+    byte byteValue = Byte.MAX_VALUE;
+    short shortValue = byteValue;
+    int intValue = shortValue;
+    long longValue = intValue;
 
-    float floatValue = 12345.90123F;
-    int intValue = (int) floatValue;
-    assertEquals(12345, intValue);
+    assertEquals("7f", Long.toHexString(longValue));
+    assertEquals("7f", Integer.toHexString(intValue));
+    assertEquals("7f", Integer.toHexString(shortValue));
+    assertEquals("7f", Integer.toHexString(byteValue));
 
-    assertEquals(6, 20 / 3);
+    assertEquals(127, longValue);
+    assertEquals(127, intValue);
+    assertEquals(127, shortValue);
+    assertEquals(127, byteValue);
   }
 
+  @Test
+  @DisplayName("T07: Floating point upgrade tests")
+  public void test07 () {
+    Short shortValue = Short.MAX_VALUE;
+    float floatValue = shortValue;
+    double doubleValue = floatValue;
+
+    assertEquals(Short.MAX_VALUE, shortValue);
+    assertEquals(Short.MAX_VALUE, floatValue);
+    assertEquals(Short.MAX_VALUE, doubleValue);
+    char character = 'a' + 1;
+  }
+
+  @Test
+  @DisplayName("T08: Floating point downgrade tests")
+  public void test08 () {
+    double doubleValue = 123456789.123456789;
+    float floatValue = (float) doubleValue;
+
+    // Like integers, data is lost when a higher precision number is
+    // cast to a lower precision type:
+    assertNotEquals(doubleValue, floatValue);
+
+    // When floating point numbers are cast to integers, the fraction
+    // is discarded:
+    long longValue = (long) doubleValue;
+    assertEquals(123456789.123456789, doubleValue);
+    assertEquals(123456789L, longValue);
+
+    // Additional bits can also be lost if the integer is too narrow
+    // for the non-fractional component
+    short shortValue = (short) doubleValue;
+    assertNotEquals(longValue, shortValue);
+  }
 
 }
